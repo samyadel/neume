@@ -20,6 +20,7 @@ export default function CreateNote({
 	createdNoteTitle,
 	setCreatedNoteTitle,
 	requiresPro,
+	isProMember,
 }) {
 	const navigation = useNavigation();
 	const [selectedBgOption, setSelectedBgOption] = useState("#F2F8FF");
@@ -46,7 +47,6 @@ export default function CreateNote({
 									createdNoteTitle,
 									createdNoteContent,
 									["Tag1", "Tag2"],
-									"20/02/2023",
 									selectedBgOption
 								);
 								navigation.goBack();
@@ -137,11 +137,12 @@ export default function CreateNote({
 						onChangeText={(newContent) => setCreatedNoteContent(newContent)}
 					/>
 				</ScrollView>
-				<View style={styles.btnsContainer}>
+				{/* <View style={styles.btnsContainer}>
 					<Pressable
 						style={styles.generateBtn}
-						onPress={() => navigation.navigate("GenerateNote")}
-						// onPress={() => navigation.navigate("Paywall")}
+						onPress={() =>
+							navigation.navigate(isProMember ? "GenerateNote" : "Paywall")
+						}
 					>
 						<MaterialIcons name="auto-fix-high" size={24} color="#fff" />
 					</Pressable>
@@ -151,7 +152,7 @@ export default function CreateNote({
 					>
 						<AntDesign name="scan1" size={24} color="#fff" />
 					</Pressable>
-				</View>
+				</View> */}
 			</SafeAreaView>
 		</Pressable>
 	);
@@ -160,7 +161,6 @@ export default function CreateNote({
 const styles = StyleSheet.create({
 	page: {
 		alignItems: "center",
-		marginTop: 40,
 		paddingHorizontal: 30,
 		width: "100%",
 		height: "93.5%",

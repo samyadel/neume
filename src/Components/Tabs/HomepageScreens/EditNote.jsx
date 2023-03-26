@@ -5,12 +5,14 @@ import {
 	StyleSheet,
 	TextInput,
 	Keyboard,
+	ScrollView,
+	Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
-import { ScrollView } from "react-native-gesture-handler";
+// import { ScrollView } from "react-native-gesture-handler";
 import Header from "../../Header";
 
 export default function EditNote({ note, saveNote }) {
@@ -22,110 +24,112 @@ export default function EditNote({ note, saveNote }) {
 	const [selectedBgOption, setSelectedBgOption] = useState(bgColor);
 
 	return (
-		<View style={{ height: "100%" }}>
-			<Pressable onPress={() => Keyboard.dismiss()}>
-				<SafeAreaView style={styles.page}>
-					<Header
-						heading="Edit Note"
-						icon1={
-							<Pressable onPress={navigation.goBack}>
-								<AntDesign name="closecircleo" size={25} color="#FC6B68" />
-							</Pressable>
-						}
-						icon2={
-							<Pressable
-								onPress={() => {
-									saveNote(noteTitle, noteContent, selectedBgOption);
-									navigation.goBack();
-								}}
-							>
-								<AntDesign name="checkcircleo" size={25} color="#FC6B68" />
-							</Pressable>
-						}
+		// <View style={{ height: "100%" }}>
+		// <Pressable onPress={() => Keyboard.dismiss()}>
+		<SafeAreaView style={styles.page}>
+			<Header
+				heading="Edit Note"
+				icon1={
+					<Pressable onPress={navigation.goBack}>
+						<AntDesign name="closecircleo" size={25} color="#FC6B68" />
+					</Pressable>
+				}
+				icon2={
+					<Pressable
+						onPress={() => {
+							if (noteTitle && noteContent) {
+								saveNote(noteTitle, noteContent, selectedBgOption);
+								navigation.goBack();
+							} else {
+								Alert.alert("Missing fields", "Please fill out all fields");
+							}
+						}}
+					>
+						<AntDesign name="checkcircleo" size={25} color="#FC6B68" />
+					</Pressable>
+				}
+			/>
+
+			<ScrollView
+				automaticallyAdjustKeyboardInsets={true}
+				// scrollToOverflowEnabled={true}
+				scrollsToTop={true}
+				keyboardDismissMode="interactive"
+			>
+				<View style={styles.editingHeading}>
+					<TextInput
+						style={styles.editingTitle}
+						defaultValue={title}
+						onChangeText={(newTitle) => setNoteTitle(newTitle)}
 					/>
+				</View>
 
-					<ScrollView automaticallyAdjustKeyboardInsets={true}>
-						<View style={styles.editingHeading}>
-							<TextInput
-								style={styles.editingTitle}
-								defaultValue={title}
-								onChangeText={(newTitle) => setNoteTitle(newTitle)}
-							/>
-						</View>
+				<View style={styles.bgColorOptions}>
+					<Pressable
+						onPress={() => setSelectedBgOption("#F2F8FF")}
+						style={{
+							...styles.bgColorOption,
+							backgroundColor: "#F2F8FF",
+							borderWidth: selectedBgOption === "#F2F8FF" ? 2 : 1,
+							borderColor:
+								selectedBgOption === "#F2F8FF" ? "black" : "rgba(0, 0, 0, .4)",
+						}}
+					></Pressable>
+					<Pressable
+						onPress={() => setSelectedBgOption("#FFF6E7")}
+						style={{
+							...styles.bgColorOption,
+							backgroundColor: "#FFF6E7",
+							borderWidth: selectedBgOption === "#FFF6E7" ? 2 : 1,
+							borderColor:
+								selectedBgOption === "#FFF6E7" ? "black" : "rgba(0, 0, 0, .4)",
+						}}
+					></Pressable>
+					<Pressable
+						onPress={() => setSelectedBgOption("#E5FFE6")}
+						style={{
+							...styles.bgColorOption,
+							backgroundColor: "#E5FFE6",
+							borderWidth: selectedBgOption === "#E5FFE6" ? 2 : 1,
+							borderColor:
+								selectedBgOption === "#E5FFE6" ? "black" : "rgba(0, 0, 0, .4)",
+						}}
+					></Pressable>
+					<Pressable
+						onPress={() => setSelectedBgOption("#F8D7E8")}
+						style={{
+							...styles.bgColorOption,
+							backgroundColor: "#F8D7E8",
+							borderWidth: selectedBgOption === "#F8D7E8" ? 2 : 1,
+							borderColor:
+								selectedBgOption === "#F8D7E8" ? "black" : "rgba(0, 0, 0, .4)",
+						}}
+					></Pressable>
+					<Pressable
+						onPress={() => setSelectedBgOption("#F8EFE6")}
+						style={{
+							...styles.bgColorOption,
+							backgroundColor: "#F8EFE6",
+							borderWidth: selectedBgOption === "#F8EFE6" ? 2 : 1,
+							borderColor:
+								selectedBgOption === "#F8EFE6" ? "black" : "rgba(0, 0, 0, .4)",
+						}}
+					></Pressable>
+				</View>
 
-						<View style={styles.bgColorOptions}>
-							<Pressable
-								onPress={() => setSelectedBgOption("#F2F8FF")}
-								style={{
-									...styles.bgColorOption,
-									backgroundColor: "#F2F8FF",
-									borderWidth: selectedBgOption === "#F2F8FF" ? 2 : 1,
-									borderColor:
-										selectedBgOption === "#F2F8FF"
-											? "black"
-											: "rgba(0, 0, 0, .4)",
-								}}
-							></Pressable>
-							<Pressable
-								onPress={() => setSelectedBgOption("#FFF6E7")}
-								style={{
-									...styles.bgColorOption,
-									backgroundColor: "#FFF6E7",
-									borderWidth: selectedBgOption === "#FFF6E7" ? 2 : 1,
-									borderColor:
-										selectedBgOption === "#FFF6E7"
-											? "black"
-											: "rgba(0, 0, 0, .4)",
-								}}
-							></Pressable>
-							<Pressable
-								onPress={() => setSelectedBgOption("#E5FFE6")}
-								style={{
-									...styles.bgColorOption,
-									backgroundColor: "#E5FFE6",
-									borderWidth: selectedBgOption === "#E5FFE6" ? 2 : 1,
-									borderColor:
-										selectedBgOption === "#E5FFE6"
-											? "black"
-											: "rgba(0, 0, 0, .4)",
-								}}
-							></Pressable>
-							<Pressable
-								onPress={() => setSelectedBgOption("#F8D7E8")}
-								style={{
-									...styles.bgColorOption,
-									backgroundColor: "#F8D7E8",
-									borderWidth: selectedBgOption === "#F8D7E8" ? 2 : 1,
-									borderColor:
-										selectedBgOption === "#F8D7E8"
-											? "black"
-											: "rgba(0, 0, 0, .4)",
-								}}
-							></Pressable>
-							<Pressable
-								onPress={() => setSelectedBgOption("#F8EFE6")}
-								style={{
-									...styles.bgColorOption,
-									backgroundColor: "#F8EFE6",
-									borderWidth: selectedBgOption === "#F8EFE6" ? 2 : 1,
-									borderColor:
-										selectedBgOption === "#F8EFE6"
-											? "black"
-											: "rgba(0, 0, 0, .4)",
-								}}
-							></Pressable>
-						</View>
-
-						<TextInput
-							style={styles.editingContent}
-							multiline={true}
-							defaultValue={noteContent}
-							onChangeText={(newContent) => setNoteContent(newContent)}
-						/>
-					</ScrollView>
-				</SafeAreaView>
-			</Pressable>
-		</View>
+				<TextInput
+					onStartShouldSetResponder={() => false}
+					style={styles.editingContent}
+					multiline={true}
+					scrollEnabled={false}
+					defaultValue={noteContent}
+					onChangeText={(newContent) => setNoteContent(newContent)}
+				/>
+				{/* <Text style={styles.editingContent}>{noteContent}</Text> */}
+			</ScrollView>
+		</SafeAreaView>
+		// </Pressable>
+		// </View>
 	);
 }
 
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
 		// marginTop: 40,
 		paddingHorizontal: 30,
 		width: "100%",
-		height: "93.5%",
+		height: "100%",
 	},
 	pageHeading: {
 		width: "100%",

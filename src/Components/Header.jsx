@@ -5,7 +5,8 @@ export default function Header({ logo, heading, icon1, icon2 }) {
 	return (
 		<View style={styles.pageHeading}>
 			<View style={styles.icon1}>{icon1}</View>
-			{logo && <Image style={styles.logo} source={logo} />}
+			{/* {logo && <Image style={styles.logo} source={logo} />} */}
+			{logo}
 			{heading && <Text style={styles.header}>{heading}</Text>}
 			<View style={styles.icon2}>{icon2}</View>
 		</View>

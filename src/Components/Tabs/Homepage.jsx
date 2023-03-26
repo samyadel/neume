@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Alert } from "react-native";
 
 import NotesView from "./HomepageScreens/NotesView";
 import EditNote from "./HomepageScreens/EditNote";
@@ -9,22 +10,30 @@ import firebase from "../../../firebaseConfig";
 import GenerateNote from "./HomepageScreens/GenerateNote";
 import TextScanner from "./HomepageScreens/TextScanner";
 import NoteQuetions from "./HomepageScreens/NoteQuestions";
-import Paywall from "./HomepageScreens/Paywall";
+import Paywall from "../Paywall";
+import useRevenueCat from "../../../hooks/useRevenueCat";
 
 import uuid from "react-native-uuid";
+import Flashcards from "./HomepageScreens/Flashcards";
+import ManageFlashcards from "./HomepageScreens/ManageFlashcards";
 
 const Stack = createStackNavigator();
 
 const userRef = firebase.firestore().collection("users");
 
-export default function Homepage({ handleLogOut }) {
+export default function Homepage({ handleLogOut, tokens, setTokens }) {
 	const [clickedNote, setClickedNote] = useState(null);
 	const [notes, setNotes] = useState([]);
+
 	const [createdNoteContent, setCreatedNoteContent] = useState("");
 	const [createdNoteTitle, setCreatedNoteTitle] = useState("");
 	const [noteQuestions, setNoteQuestions] = useState("");
 	const [noteContent, setNoteContent] = useState("");
 	const [noteTitle, setNoteTitle] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [flashcardsArr, setFlashcardsArr] = useState([]);
+
+	const { isProMember } = useRevenueCat();
 
 	const navigation = useNavigation();
 
@@ -35,6 +44,7 @@ export default function Homepage({ handleLogOut }) {
 			querySnapshot.forEach((doc) => {
 				if (doc.id === user.uid) {
 					setNotes(doc.data().notes);
+					setTokens(doc.data().tokens);
 				}
 			});
 		});
@@ -73,7 +83,7 @@ export default function Homepage({ handleLogOut }) {
 			if (note.id == clickedNote.id) {
 				const arr = notes;
 				arr.splice(i, 1, {
-					...clickedNote,
+					...note,
 					title,
 					content,
 					bgColor,
@@ -102,24 +112,64 @@ export default function Homepage({ handleLogOut }) {
 		});
 	}
 
-	function createNote(title, content, tags, date, bgColor) {
-		const arr = notes;
-		arr.unshift({
-			id: uuid.v4(),
-			title,
-			content,
-			tags,
-			date,
-			bgColor,
-			favourite: false,
-			questions: "",
-		});
+	function saveFlashcards(flashcards) {
+		notes.forEach((note, i) => {
+			if (note.id == clickedNote.id) {
+				const arr = notes;
+				arr.splice(i, 1, {
+					...clickedNote,
+					flashcards,
+				});
 
-		userRef.doc(user.uid).update({
-			notes: arr,
+				userRef.doc(user.uid).update({
+					notes: arr,
+				});
+			}
 		});
+	}
 
-		setNotes(arr);
+	function createNote(title, content, tags, bgColor) {
+		if (title && content) {
+			const arr = notes;
+			const id = uuid.v4();
+
+			const today = new Date();
+			let dd = today.getDate();
+			let mm = today.getMonth() + 1;
+
+			const yyyy = today.getFullYear();
+			if (dd < 10) {
+				dd = "0" + dd;
+			}
+			if (mm < 10) {
+				mm = "0" + mm;
+			}
+
+			const date = dd + "/" + mm + "/" + yyyy;
+
+			arr.unshift({
+				id,
+				title,
+				content,
+				tags,
+				date,
+				bgColor,
+				favourite: false,
+				flashcards: [],
+			});
+
+			userRef.doc(user.uid).update({
+				notes: arr,
+			});
+
+			console.log(arr[arr.length - 1]);
+
+			setNotes(arr);
+
+			return id;
+		} else {
+			Alert.alert("Missing fields", "Please fill out all fields");
+		}
 	}
 
 	return (
@@ -134,12 +184,14 @@ export default function Homepage({ handleLogOut }) {
 			<Stack.Screen name="Dashboard">
 				{() => (
 					<NotesView
+						isProMember={isProMember}
 						displayQuestions={displayQuestions}
 						favouriteNote={favouriteNote}
 						deleteNote={deleteNote}
 						handleLogOut={handleLogOut}
 						setNotes={setNotes}
 						notes={notes}
+						tokens={tokens}
 						onNotePress={(selectedNoteId) => {
 							notes.forEach((note) => {
 								if (note.id === selectedNoteId) {
@@ -155,10 +207,44 @@ export default function Homepage({ handleLogOut }) {
 					return <EditNote note={clickedNote} saveNote={saveNote} />;
 				}}
 			</Stack.Screen>
-			<Stack.Screen name="Create">
+			<Stack.Screen
+				name="Flashcards"
+				options={{ presentation: "modal", gestureEnabled: !loading }}
+			>
+				{() => {
+					return (
+						<Flashcards
+							note={clickedNote}
+							saveFlashcards={saveFlashcards}
+							loading={loading}
+							setLoading={setLoading}
+							flashcardsArr={flashcardsArr}
+							setFlashcardsArr={setFlashcardsArr}
+							tokens={tokens}
+							setTokens={setTokens}
+						/>
+					);
+				}}
+			</Stack.Screen>
+			<Stack.Screen name="ManageFlashcards" options={{ presentation: "modal" }}>
+				{() => {
+					return (
+						<ManageFlashcards
+							note={clickedNote}
+							saveFlashcards={saveFlashcards}
+							loading={loading}
+							setLoading={setLoading}
+							flashcardsArr={flashcardsArr}
+							setFlashcardsArr={setFlashcardsArr}
+						/>
+					);
+				}}
+			</Stack.Screen>
+			<Stack.Screen name="Create" options={{ presentation: "modal" }}>
 				{() => {
 					return (
 						<CreateNote
+							isProMember={isProMember}
 							createNote={createNote}
 							createdNoteContent={createdNoteContent}
 							setCreatedNoteContent={setCreatedNoteContent}
@@ -168,17 +254,26 @@ export default function Homepage({ handleLogOut }) {
 					);
 				}}
 			</Stack.Screen>
-			<Stack.Screen name="GenerateNote" options={{ presentation: "modal" }}>
+			<Stack.Screen
+				name="Generate"
+				options={{ presentation: "modal", gestureEnabled: !loading }}
+			>
 				{() => {
 					return (
 						<GenerateNote
+							loading={loading}
+							setLoading={setLoading}
+							createNote={createNote}
+							setClickedNote={setClickedNote}
 							setCreatedNoteContent={setCreatedNoteContent}
 							setCreatedNoteTitle={setCreatedNoteTitle}
+							tokens={tokens}
+							setTokens={setTokens}
 						/>
 					);
 				}}
 			</Stack.Screen>
-			<Stack.Screen name="ScanText">
+			<Stack.Screen name="Scan">
 				{() => {
 					return (
 						<TextScanner
@@ -200,11 +295,6 @@ export default function Homepage({ handleLogOut }) {
 					);
 				}}
 			</Stack.Screen>
-			<Stack.Screen
-				name="Paywall"
-				component={Paywall}
-				options={{ presentation: "modal" }}
-			/>
 		</Stack.Navigator>
 	);
 }

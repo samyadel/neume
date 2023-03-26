@@ -3,11 +3,22 @@ import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+	AntDesign,
+	Feather,
+	MaterialIcons,
+	FontAwesome,
+	MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 import ViewOptions from "./NoteViewComponents/ViewOptions";
 import Note from "./NoteViewComponents/Note";
 import Header from "../../Header";
+import useRevenueCat from "../../../../hooks/useRevenueCat";
+
+import * as Haptics from "expo-haptics";
+
+// import * as functions from "firebase-functions";
 
 function BlankPage({ heading, children }) {
 	return (
@@ -21,6 +32,7 @@ function BlankPage({ heading, children }) {
 export default function NotesView({
 	onNotePress,
 	notes,
+	tokens,
 	handleLogOut,
 	deleteNote,
 	favouriteNote,
@@ -34,6 +46,8 @@ export default function NotesView({
 	const [favouriteNoteArr, setFavouriteNoteArr] = useState([]);
 
 	const [clicked, setClicked] = useState(false);
+
+	const { isProMember } = useRevenueCat();
 
 	useEffect(() => {
 		notes.forEach((note) => {
@@ -87,88 +101,152 @@ export default function NotesView({
 	};
 
 	return (
-		<SafeAreaView style={styles.page}>
-			<Header
-				logo={require("../../../../assets/neumeLogo.png")}
-				icon1={
-					<Pressable onPress={handleLogOut} style={styles.userAvatar}>
-						<MaterialIcons name="logout" size={26} color="black" />
-					</Pressable>
-				}
-				icon2={
-					<Pressable
-						style={styles.headerBtns}
-						onPress={() => navigation.navigate("Create")}
-						// setClicked(!clicked)
-					>
-						<Feather name="plus" size={26} color="#494156" />
-					</Pressable>
-				}
-			/>
+		<View>
+			<Pressable
+				onPress={() => setClicked(false)}
+				style={{
+					display: clicked ? "flex" : "none",
+					// backgroundColor: "#000",
+					// opacity: 0.5,
+					width: "100%",
+					height: "200%",
+					position: "absolute",
+					top: 0,
+					left: 0,
+					zIndex: 5,
+				}}
+			></Pressable>
 
-			{/* <View style={{ ...styles.createOptions, opacity: clicked ? 1 : 0 }}>
+			<View
+				style={{
+					...styles.createOptions,
+					display: clicked ? "flex" : "none",
+				}}
+			>
 				<Pressable>
-					<Text style={styles.createOption}>
-						<AntDesign name="addfile" size={24} color="black" /> Create Note
-					</Text>
-					<Text style={styles.createOption}>Generate Note</Text>
-					<Text style={{ ...styles.createOption, marginBottom: 0 }}>
-						Scan Note
-					</Text>
+					<Pressable
+						style={styles.createOption}
+						onPress={() => {
+							navigation.navigate("Create");
+							setClicked(false);
+						}}
+					>
+						<AntDesign
+							name="addfile"
+							size={16}
+							color="black"
+							style={styles.actionIcon}
+						/>
+						<Text>Write a note</Text>
+					</Pressable>
+					<Pressable
+						style={{ ...styles.createOption, marginBottom: 0 }}
+						onPress={() => {
+							navigation.navigate("Generate");
+							setClicked(false);
+						}}
+					>
+						<MaterialIcons
+							name="auto-fix-high"
+							size={16}
+							color="black"
+							style={styles.actionIcon}
+						/>
+						<Text>Generate a note</Text>
+					</Pressable>
+					{/* <Pressable
+						style={{ ...styles.createOption, marginBottom: 0 }}
+						onPress={() => {
+							navigation.navigate("Scan");
+							setClicked(false);
+						}}
+					>
+						<AntDesign
+							name="scan1"
+							size={16}
+							color="black"
+							style={styles.actionIcon}
+						/>
+						<Text>Scan Note</Text>
+					</Pressable> */}
 				</Pressable>
-			</View> */}
+			</View>
 
-			<ViewOptions
-				selectedOption={selectedOption}
-				setSelectedOption={setSelectedOption}
-			/>
-
-			<ScrollView
-				ref={notesScrollRef}
-				style={{
-					...styles.displayNotesWrapper,
-					display: selectedOption === "notes" ? "flex" : "none",
-					width: "100%",
-				}}
-			>
-				{notes.length > 0 ? (
-					notes.map((note) => {
-						return (
-							<Note
-								simultaneousHandlers={notesScrollRef}
-								onDismiss={onDismiss}
-								onPress={() => {
-									onNotePress(note.id);
-									navigation.navigate("Edit");
-								}}
-								key={note.id}
-								id={note.id}
-								note={note}
-								favouriteNote={handleFavouriteNoteClick}
-								favourite={note.favourite}
-								onQuestionShow={onQuestionShow}
+			<SafeAreaView style={styles.page}>
+				<Header
+					logo={
+						<Image
+							style={{
+								...styles.logo,
+								aspectRatio: isProMember ? 7.63 : 6.31,
+								width: isProMember ? "34%" : "27%",
+							}}
+							source={
+								isProMember
+									? require("../../../../assets/neumeProLogo.png")
+									: require("../../../../assets/neumeLogo.png")
+							}
+						/>
+					}
+					icon1={
+						<Pressable
+							onPress={() => navigation.navigate("Paywall")}
+							// style={styles.userAvatar}
+							style={{
+								...styles.userTokens,
+								backgroundColor: "#ECEAF8",
+								paddingVertical: 7,
+								paddingHorizontal: 10,
+								borderRadius: 10,
+							}}
+						>
+							<FontAwesome
+								name="ticket"
+								size={24}
+								color="#F86968"
+								style={{ marginRight: 10 }}
 							/>
-						);
-					})
-				) : (
-					<BlankPage heading="You have no notes">
-						Start by pressing <Feather name="plus" size={16} color="#494156" />{" "}
-						at the top of your screen
-					</BlankPage>
-				)}
-			</ScrollView>
+							{isProMember ? (
+								<MaterialCommunityIcons
+									name="infinity"
+									size={24}
+									color="black"
+								/>
+							) : (
+								<Text style={{ fontSize: 16, fontWeight: "500" }}>
+									{tokens}
+								</Text>
+							)}
+							{/* <MaterialIcons name="logout" size={26} color="black" /> */}
+							{/* <MaterialIcons name="account-circle" size={32} color="black" /> */}
+						</Pressable>
+					}
+					icon2={
+						<Pressable
+							style={styles.headerBtns}
+							onPress={() => setClicked(!clicked)}
+							// navigation.navigate("Create")
+						>
+							<Feather name="plus" size={26} color="#494156" />
+						</Pressable>
+					}
+				/>
 
-			<ScrollView
-				ref={favouritesScrollRef}
-				style={{
-					...styles.displayNotesWrapper,
-					display: selectedOption === "favourites" ? "flex" : "none",
-					width: "100%",
-				}}
-			>
-				{favouriteNoteArr.length > 0 ? (
-					notes.map((note) => {
-						if (favouriteNoteArr.includes(note.id)) {
+				<ViewOptions
+					selectedOption={selectedOption}
+					setSelectedOption={setSelectedOption}
+				/>
+
+				<ScrollView
+					ref={notesScrollRef}
+					style={{
+						...styles.displayNotesWrapper,
+						display: selectedOption === "notes" ? "flex" : "none",
+						width: "100%",
+					}}
+				>
+					{notes.length > 0 ? (
+						notes.map((note) => {
 							return (
 								<Note
 									simultaneousHandlers={notesScrollRef}
@@ -176,6 +254,11 @@ export default function NotesView({
 									onPress={() => {
 										onNotePress(note.id);
 										navigation.navigate("Edit");
+									}}
+									onLongPress={() => {
+										onNotePress(note.id);
+										Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+										navigation.navigate("Flashcards");
 									}}
 									key={note.id}
 									id={note.id}
@@ -185,24 +268,78 @@ export default function NotesView({
 									onQuestionShow={onQuestionShow}
 								/>
 							);
-						}
-					})
-				) : (
-					<BlankPage heading={"You have no favourites"}>
-						Favourite a note by clicking the{" "}
-						<AntDesign name={"star"} size={16} color="#494156" /> button
-					</BlankPage>
-				)}
-			</ScrollView>
-		</SafeAreaView>
+						})
+					) : (
+						<BlankPage heading="You have no notes">
+							Start by pressing{" "}
+							<Feather name="plus" size={16} color="#494156" /> at the top of
+							your screen
+						</BlankPage>
+					)}
+				</ScrollView>
+
+				<ScrollView
+					ref={favouritesScrollRef}
+					style={{
+						...styles.displayNotesWrapper,
+						display: selectedOption === "favourites" ? "flex" : "none",
+						width: "100%",
+					}}
+				>
+					{favouriteNoteArr.length > 0 ? (
+						notes.map((note) => {
+							if (favouriteNoteArr.includes(note.id)) {
+								return (
+									<Note
+										simultaneousHandlers={notesScrollRef}
+										onDismiss={onDismiss}
+										onPress={() => {
+											onNotePress(note.id);
+											navigation.navigate("Edit");
+										}}
+										onLongPress={() => {
+											onNotePress(note.id);
+											navigation.navigate("Flashcards");
+										}}
+										key={note.id}
+										id={note.id}
+										note={note}
+										favouriteNote={handleFavouriteNoteClick}
+										favourite={note.favourite}
+										onQuestionShow={onQuestionShow}
+									/>
+								);
+							}
+						})
+					) : (
+						<BlankPage heading={"You have no favourites"}>
+							Favourite a note by clicking the{" "}
+							<AntDesign name={"star"} size={16} color="#494156" /> button
+						</BlankPage>
+					)}
+				</ScrollView>
+			</SafeAreaView>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
+	userTokens: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	logo: {
+		height: undefined,
+		resizeMode: "contain",
+		opacity: 0.8,
+	},
+	actionIcon: {
+		marginRight: 12,
+	},
 	createOptions: {
 		position: "absolute",
 		right: 30,
-		top: 80,
+		top: 120,
 		zIndex: 10,
 		backgroundColor: "#FFF",
 		padding: 20,
@@ -215,10 +352,14 @@ const styles = StyleSheet.create({
 		shadowRadius: 2,
 	},
 	createOption: {
-		backgroundColor: "rgba(0, 0, 0, .04)",
+		// backgroundColor: "rgba(0, 0, 0, .04)",
 		padding: 10,
+		paddingLeft: 5,
 		borderRadius: 10,
 		marginBottom: 5,
+		// backgroundColor: "red",
+		// justifyContent: "space-between",
+		flexDirection: "row",
 	},
 	displayNotesWrapper: {
 		height: "100%",

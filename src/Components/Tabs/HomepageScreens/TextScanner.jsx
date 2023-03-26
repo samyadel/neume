@@ -29,7 +29,7 @@ export default function TextScanner({ setCreatedNoteContent }) {
 	const submitToGoogle = async (url) => {
 		try {
 			let response = await axios.post(
-				"https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAzzO6xOlpApFHE9m6lf5yX-CFaVzdSZ68&fields=responses.fullTextAnnotation.text",
+				"https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAEN-sefrRgsg_4aWc7ZijvVWgvqz55d9U&fields=responses.fullTextAnnotation.text",
 				{
 					requests: [
 						{
@@ -107,7 +107,7 @@ export default function TextScanner({ setCreatedNoteContent }) {
 			setImage(null);
 			setLoading(false);
 
-			navigation.goBack();
+			navigation.navigate("Create");
 		}
 	};
 

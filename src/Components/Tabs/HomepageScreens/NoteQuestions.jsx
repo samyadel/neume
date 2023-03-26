@@ -15,65 +15,83 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import LoadingCard from "../../LoadingCard";
 
+import { auth, db } from "../../../../firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import firebase from "../../../../firebaseConfig";
+import useRevenueCat from "../../../../hooks/useRevenueCat";
+
 export default function NoteQuetions({ questions, content, title, saveNote }) {
 	const [noteQuestions, setNoteQuestions] = useState(questions);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const apiKey = "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";
+	const apiKey = "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";
 	const apiUrl = "https://api.openai.com/v1/completions";
 
 	const navigation = useNavigation();
 
+	const userRef = doc(db, "users", auth.currentUser.uid);
+	const usersCollection = firebase.firestore().collection("users");
+
+	const { isProMember } = useRevenueCat();
+
 	const handleClick = async (notes) => {
-		setIsLoading(true);
-		Keyboard.dismiss();
+		const userSnap = await getDoc(userRef);
 
-		const createErrorAlert = () =>
-			Alert.alert("Oh oh!", "Something went wrong. Please try again.", [
-				{ text: "OK" },
-			]);
+		if (userSnap.data().dailyQuestions < 2 || isProMember) {
+			setIsLoading(true);
+			Keyboard.dismiss();
 
-		if (notes.length < 100) {
-			setIsLoading(false);
+			const createErrorAlert = () =>
+				Alert.alert("Oh oh!", "Something went wrong. Please try again.", [
+					{ text: "OK" },
+				]);
 
-			const createTwoButtonAlert = () =>
-				Alert.alert(
-					"Failed to generate questions",
-					"Your notes must be at least 100 characters long to generate questions from them",
-					[{ text: "OK" }]
-				);
+			if (notes.length < 100) {
+				setIsLoading(false);
 
-			createTwoButtonAlert();
-		} else {
-			const prompt = `Generate 5 questions from the following notes, in the format QUESTION (new line) ANSWER: . Next to the question, give a reasonable mark for the answer hinting at how many points must be included. Answers must vary in length and detail and in marks awarded. Here are the notes to make questions from: ${notes}`;
-			const response = await axios
-				.post(
-					apiUrl,
-					{
-						model: "text-davinci-003",
-						prompt,
-						max_tokens: 1024,
-						temperature: 0.5,
-					},
-					{
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${apiKey}`,
+				const createTwoButtonAlert = () =>
+					Alert.alert(
+						"Failed to generate questions",
+						"Your notes must be at least 100 characters long to generate questions from them",
+						[{ text: "OK" }]
+					);
+
+				createTwoButtonAlert();
+			} else {
+				const prompt = `Generate 5 questions from the following notes, in the format QUESTION (new line) ANSWER: . Next to the question, give a reasonable mark for the answer hinting at how many points must be included. Answers must vary in length and detail and in marks awarded. Here are the notes to make questions from: ${notes}`;
+				const response = await axios
+					.post(
+						apiUrl,
+						{
+							model: "text-davinci-003",
+							prompt,
+							max_tokens: 1024,
+							temperature: 0.5,
 						},
-					}
-				)
-				.catch((e) => {
-					console.log(e);
-					createErrorAlert();
+						{
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${apiKey}`,
+							},
+						}
+					)
+					.catch((e) => {
+						console.log(e);
+						createErrorAlert();
+					});
+
+				const text = response.data.choices[0].text.trim();
+
+				setNoteQuestions(
+					`${noteQuestions && noteQuestions + "\n-----\n "}${text}`
+				);
+				usersCollection.doc(auth.currentUser.uid).update({
+					dailyQuestions: userSnap.data().dailyQuestions + 1,
 				});
-
-			const text = response.data.choices[0].text.trim();
-
-			setNoteQuestions(
-				`${noteQuestions && noteQuestions + "\n-----\n "}${text}`
-			);
-
-			setIsLoading(false);
+				setIsLoading(false);
+			}
+		} else {
+			navigation.navigate("Paywall");
 		}
 	};
 

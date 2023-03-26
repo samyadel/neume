@@ -15,6 +15,7 @@ import LoadingCard from "../LoadingCard";
 import axios from "axios";
 import TipCard from "./ImproveWorkComponents/TipCard";
 import Header from "../Header";
+import { OPENAI_API_KEY } from "@env";
 
 export default function ImproveWork() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function ImproveWork() {
 		setIsLoading(true);
 		Keyboard.dismiss();
 
-		const apiKey = "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";
+		const apiKey = OPENAI_API_KEY;
 		const apiUrl = "https://api.openai.com/v1/completions";
 
 		const prompt = `Can you give 5 tips to improve the following answer. With each tip, give an example. Be straight to the point and do not be too wordy. Return your answer in a JSON object with each tip grouped in an object with its corresponding example. Here is how I want it to be formated {"tips": [{"tip": "", "example": ""}]}: ${userWork}`;
@@ -73,7 +74,7 @@ export default function ImproveWork() {
 		setIsLoading(true);
 		Keyboard.dismiss();
 
-		const apiKey = "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";
+		const apiKey = "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";
 		const apiUrl = "https://api.openai.com/v1/completions";
 
 		const prompt = `I will first paste a piece of text, and then paste an array of tips. Please rewrite the piece of text with each of the tips applied to it. PIECE OF TEXT: ${work}. ARRAY OF TIPS: ${selectedTips}`;

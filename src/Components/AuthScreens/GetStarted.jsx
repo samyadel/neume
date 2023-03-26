@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../../firebaseConfig";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function GetStarted() {
 	const navigation = useNavigation();
@@ -21,36 +22,38 @@ export default function GetStarted() {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.page}>
-			<View style={styles.illustrationContainer}>
-				<Image
-					style={styles.illustration}
-					source={require("../../../assets/illustration.png")}
-				/>
-			</View>
-			<Text style={styles.heading}>Get the Grades You Deserve</Text>
-			<Text style={styles.subheading}>
-				Let Neume handle the long, useless tasks. You focus on the important
-				stuff
-			</Text>
+		<ScrollView style={{ backgroundColor: "#ECEAF8" }}>
+			<SafeAreaView style={styles.page}>
+				<View style={styles.illustrationContainer}>
+					<Image
+						style={styles.illustration}
+						source={require("../../../assets/illustration.png")}
+					/>
+				</View>
+				<Text style={styles.heading}>Get the Grades You Deserve</Text>
+				<Text style={styles.subheading}>
+					Let Neume handle the long, useless tasks. You focus on the important
+					stuff
+				</Text>
 
-			<View style={styles.btnsWrapper}>
-				<Pressable
-					style={[styles.authOptionBtn, styles.loginBtn]}
-					onPress={() => navigation.navigate("Login")}
-				>
-					<View style={styles.txtContainer}>
-						<Text style={styles.btnTxt}>Log in</Text>
-					</View>
-				</Pressable>
-				<Pressable
-					style={[styles.authOptionBtn, styles.registerBtn]}
-					onPress={() => navigation.navigate("Register")}
-				>
-					<Text style={styles.btnTxt}>Register</Text>
-				</Pressable>
-			</View>
-		</SafeAreaView>
+				<View style={styles.btnsWrapper}>
+					<Pressable
+						style={[styles.authOptionBtn, styles.loginBtn]}
+						onPress={() => navigation.navigate("Login")}
+					>
+						<View style={styles.txtContainer}>
+							<Text style={styles.btnTxt}>Log in</Text>
+						</View>
+					</Pressable>
+					<Pressable
+						style={[styles.authOptionBtn, styles.registerBtn]}
+						onPress={() => navigation.navigate("Register")}
+					>
+						<Text style={styles.btnTxt}>Register</Text>
+					</Pressable>
+				</View>
+			</SafeAreaView>
+		</ScrollView>
 	);
 }
 

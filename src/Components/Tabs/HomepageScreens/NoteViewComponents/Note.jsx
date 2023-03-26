@@ -14,6 +14,7 @@ const NOTE_HEIGHT = 217;
 
 export default function Note({
 	onPress,
+	onLongPress,
 	note,
 	onDismiss,
 	simultaneousHandlers,
@@ -33,9 +34,9 @@ export default function Note({
 
 	const panGesture = useAnimatedGestureHandler({
 		onActive: (e) => {
-			// if (e.translationX < 0) {
-			translateX.value = e.translationX;
-			// }
+			if (e.translationX < 0) {
+				translateX.value = e.translationX;
+			}
 		},
 		onEnd: (e) => {
 			const shouldBeDismissed = translateX.value < RIGHT_TRANSLATE_X_THRESHOLD;
@@ -90,8 +91,12 @@ export default function Note({
 		};
 	});
 
+	function handleLongPress() {
+		console.log("longpress");
+	}
+
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable onPress={onPress} onLongPress={onLongPress}>
 			<Animated.View
 				style={[styles.noteContainer, rNoteContainerStyle]}
 				// onLayout={getHeight}
@@ -105,7 +110,7 @@ export default function Note({
 					<MaterialIcons name="question-answer" size={27} color="#FC6B68" />
 				</Animated.View>
 				<PanGestureHandler
-					// activeOffsetX={-40}
+					// activeOffsetX={-20}
 					simultaneousHandlers={simultaneousHandlers}
 					onGestureEvent={panGesture}
 				>

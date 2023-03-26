@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import "firebase/compat/functions";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
@@ -22,6 +23,7 @@ if (!firebase.apps.length) {
 } else {
 	app = firebase.app();
 }
+
 const storage = getStorage(app, "gs://neumi-app-development.appspot.com");
 const auth = app.auth();
 const db = getFirestore(app);

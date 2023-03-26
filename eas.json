@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.7.2"
+    "version": ">= 3.7.2",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
     "development": {
@@ -19,6 +20,10 @@
     "production": {
       "ios": {
         "resourceClass": "m1-medium"
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "image": "latest"
       }
     }
   },

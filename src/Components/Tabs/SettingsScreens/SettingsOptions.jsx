@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, Linking } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -28,14 +28,22 @@ export default function SettingsOptions({ handleLogOut }) {
 					</View>
 					<AntDesign name="right" size={16} color="black" />
 				</Pressable>
-				<Pressable style={styles.button}>
+				<Pressable
+					style={styles.button}
+					onPress={() => Linking.openURL("mailto:neumeapp.ai@gmail.com")}
+				>
 					<View style={styles.leftContainer}>
 						<MaterialIcons name="support-agent" size={18} color="black" />
 						<Text style={styles.buttonTxt}>Support</Text>
 					</View>
 					<AntDesign name="right" size={16} color="black" />
 				</Pressable>
-				<Pressable style={styles.button}>
+				<Pressable
+					style={styles.button}
+					onPress={() =>
+						Linking.openURL("https://samyadel.github.io/neume-tos/")
+					}
+				>
 					<View style={styles.leftContainer}>
 						<Ionicons
 							name="ios-document-text-outline"

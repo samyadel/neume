@@ -21,7 +21,9 @@ export default function LoadingCard({ isLoading, loadingText, width }) {
 					{loadingText}
 					{ellipsis}
 				</Text>
-				<Text style={styles.timeWarning}>This may take a minute</Text>
+				<Text style={styles.timeWarning}>
+					This may take a minute. Please do not leave the app
+				</Text>
 			</View>
 		</View>
 	);
