@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
 	docWrapper: {
 		width: "30%",
 		marginRight: 10,
+		marginBottom: 20,
 	},
 	docImageWrapper: {
 		borderWidth: 3,

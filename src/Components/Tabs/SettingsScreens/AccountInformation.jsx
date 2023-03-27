@@ -14,6 +14,8 @@ import { AntDesign } from "@expo/vector-icons";
 import firebase, { auth, db } from "../../../../firebaseConfig";
 import Header from "../../Header";
 
+import { ScrollView } from "react-native-gesture-handler";
+
 export default function AccountInformation() {
 	const navigation = useNavigation();
 
@@ -44,149 +46,151 @@ export default function AccountInformation() {
 	};
 
 	return (
-		<Pressable onPress={Keyboard.dismiss}>
-			<SafeAreaView style={styles.page}>
-				<Header
-					heading="Update Information"
-					icon1={
-						<Pressable onPress={navigation.goBack}>
-							<AntDesign name="closecircleo" size={25} color="#FC6B68" />
-						</Pressable>
-					}
-				/>
-
-				<View style={styles.inputContainer}>
-					<TextInput
-						style={{
-							...styles.generateOption,
-							color: isOAuth ? "rgba(0, 0, 0, .4)" : "#000",
-						}}
-						placeholder={"New email"}
-						defaultValue={email}
-						keyboardType="email-address"
-						onChangeText={(email) => setEmail(email)}
-						editable={!isOAuth}
+		<ScrollView>
+			<Pressable onPress={Keyboard.dismiss}>
+				<SafeAreaView style={styles.page}>
+					<Header
+						heading="Update Information"
+						icon1={
+							<Pressable onPress={navigation.goBack}>
+								<AntDesign name="closecircleo" size={25} color="#FC6B68" />
+							</Pressable>
+						}
 					/>
-					<TextInput
-						style={styles.generateOption}
-						placeholder="Password"
-						onChangeText={setPassword}
-						editable={!isOAuth}
-					/>
-					<Pressable
-						disabled={isOAuth}
-						style={styles.button}
-						onPress={() => {
-							reauthenticate()
-								.then(() => {
-									auth.currentUser.email !== email &&
-										auth.currentUser
-											.updateEmail(email)
-											.then(() => {
-												Alert.alert("Your email has been updated");
-											})
-											.catch((e) => {
-												Alert.alert(
-													"Something went wrong",
-													"Please make sure you've entered a valid email, and that your password is correct"
-												);
-											});
-								})
-								.catch((e) => {
-									Alert.alert(
-										"Something went wrong",
-										"Please make sure you've entered a valid email, and that your password is correct"
-									);
-								});
-						}}
-					>
-						<Text style={styles.buttonText}>Update Account</Text>
-					</Pressable>
-					<Pressable
-						style={{ ...styles.button, backgroundColor: "#fff", padding: 0 }}
-						onPress={() => {
-							Alert.alert(
-								"Delete account?",
-								"This action is permanent",
-								[
-									{
-										text: "Delete",
-										onPress: async () => {
-											// reauthenticate()
-											// .then(async () => {
-											const userId = firebase.auth().currentUser.uid;
-											firebase
-												.auth()
-												.currentUser.delete()
-												.then(async () => {
-													await firebase
-														.firestore()
-														.collection("users")
-														.doc(userId)
-														.delete();
 
-													navigation.reset({
-														index: 0,
-														routes: [{ name: "GetStarted" }],
-													});
-													Alert.alert("Account deleted");
-												})
-												.catch(async (e) => {
-													await reauthenticate().catch((e) => {
-														console.log(e);
-														Alert.alert(
-															"Enter your password to delete your account"
-														);
-													});
-
-													firebase
-														.auth()
-														.currentUser.delete()
-														.then(async () => {
-															await firebase
-																.firestore()
-																.collection("users")
-																.doc(userId)
-																.delete();
-
-															navigation.reset({
-																index: 0,
-																routes: [{ name: "GetStarted" }],
-															});
-															Alert.alert("Account deleted");
-														});
-												});
-										},
-										style: "default",
-									},
-									{
-										text: "Cancel",
-										style: "cancel",
-									},
-								],
-								{
-									cancelable: true,
-									onDismiss: () =>
-										Alert.alert(
-											"This alert was dismissed by tapping outside of the alert dialog."
-										),
-								}
-							);
-						}}
-					>
-						<Text
+					<View style={styles.inputContainer}>
+						<TextInput
 							style={{
-								...styles.buttonText,
-								color: "#FC6B68",
-								fontWeight: "400",
+								...styles.generateOption,
+								color: isOAuth ? "rgba(0, 0, 0, .4)" : "#000",
+							}}
+							placeholder={"New email"}
+							defaultValue={email}
+							keyboardType="email-address"
+							onChangeText={(email) => setEmail(email)}
+							editable={!isOAuth}
+						/>
+						<TextInput
+							style={styles.generateOption}
+							placeholder="Password"
+							onChangeText={setPassword}
+							editable={!isOAuth}
+						/>
+						<Pressable
+							disabled={isOAuth}
+							style={styles.button}
+							onPress={() => {
+								reauthenticate()
+									.then(() => {
+										auth.currentUser.email !== email &&
+											auth.currentUser
+												.updateEmail(email)
+												.then(() => {
+													Alert.alert("Your email has been updated");
+												})
+												.catch((e) => {
+													Alert.alert(
+														"Something went wrong",
+														"Please make sure you've entered a valid email, and that your password is correct"
+													);
+												});
+									})
+									.catch((e) => {
+										Alert.alert(
+											"Something went wrong",
+											"Please make sure you've entered a valid email, and that your password is correct"
+										);
+									});
 							}}
 						>
-							Delete account
-						</Text>
-					</Pressable>
-				</View>
-			</SafeAreaView>
-		</Pressable>
+							<Text style={styles.buttonText}>Update Account</Text>
+						</Pressable>
+						<Pressable
+							style={{ ...styles.button, backgroundColor: "#fff", padding: 0 }}
+							onPress={() => {
+								Alert.alert(
+									"Delete account?",
+									"This action is permanent",
+									[
+										{
+											text: "Delete",
+											onPress: async () => {
+												// reauthenticate()
+												// .then(async () => {
+												const userId = firebase.auth().currentUser.uid;
+												firebase
+													.auth()
+													.currentUser.delete()
+													.then(async () => {
+														await firebase
+															.firestore()
+															.collection("users")
+															.doc(userId)
+															.delete();
+
+														navigation.reset({
+															index: 0,
+															routes: [{ name: "GetStarted" }],
+														});
+														Alert.alert("Account deleted");
+													})
+													.catch(async (e) => {
+														await reauthenticate().catch((e) => {
+															console.log(e);
+															Alert.alert(
+																"Enter your password to delete your account"
+															);
+														});
+
+														firebase
+															.auth()
+															.currentUser.delete()
+															.then(async () => {
+																await firebase
+																	.firestore()
+																	.collection("users")
+																	.doc(userId)
+																	.delete();
+
+																navigation.reset({
+																	index: 0,
+																	routes: [{ name: "GetStarted" }],
+																});
+																Alert.alert("Account deleted");
+															});
+													});
+											},
+											style: "default",
+										},
+										{
+											text: "Cancel",
+											style: "cancel",
+										},
+									],
+									{
+										cancelable: true,
+										onDismiss: () =>
+											Alert.alert(
+												"This alert was dismissed by tapping outside of the alert dialog."
+											),
+									}
+								);
+							}}
+						>
+							<Text
+								style={{
+									...styles.buttonText,
+									color: "#FC6B68",
+									fontWeight: "400",
+								}}
+							>
+								Delete account
+							</Text>
+						</Pressable>
+					</View>
+				</SafeAreaView>
+			</Pressable>
+		</ScrollView>
 	);
 }
 

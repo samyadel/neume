@@ -13,6 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Header from "../../Header";
 import { useNavigation } from "@react-navigation/native";
 import useRevenueCat from "../../../../hooks/useRevenueCat";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function UploadDocument({ uploadDocument, tokens }) {
 	const navigation = useNavigation();
@@ -24,7 +25,7 @@ export default function UploadDocument({ uploadDocument, tokens }) {
 
 	return (
 		<Pressable onPress={Keyboard.dismiss}>
-			<View style={styles.container}>
+			<ScrollView style={styles.container}>
 				<SafeAreaView style={styles.page}>
 					<Header
 						heading="Upload Document"
@@ -110,7 +111,7 @@ export default function UploadDocument({ uploadDocument, tokens }) {
 						<Text style={styles.buttonText}>Upload Document</Text>
 					</Pressable>
 				</SafeAreaView>
-			</View>
+			</ScrollView>
 		</Pressable>
 	);
 }

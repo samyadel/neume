@@ -22,7 +22,7 @@ export default function App() {
 				screenOptions={{
 					headerShown: false,
 					cardStyle: {
-						backgroundColor: "#FFF",
+						backgroundColor: "#ECEAF8",
 					},
 				}}
 			>
@@ -34,7 +34,10 @@ export default function App() {
 				<Stack.Screen
 					name="Paywall"
 					component={Paywall}
-					options={{ presentation: "modal" }}
+					options={{
+						presentation: "modal",
+						cardStyle: { backgroundColor: "#fff" },
+					}}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

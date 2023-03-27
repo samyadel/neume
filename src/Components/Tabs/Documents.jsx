@@ -133,7 +133,7 @@ export default function Documents({ tokens, setTokens }) {
 		userRef.onSnapshot((querySnapshot) => {
 			querySnapshot.forEach((doc) => {
 				if (doc.id === user.uid) {
-					setDocsArr(doc.data().smartDocs);
+					setDocsArr(doc.data().smartDocs || []);
 				}
 			});
 		});

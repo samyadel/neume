@@ -81,8 +81,8 @@ export default function DocumentView({ docsArr, openDoc, deleteDoc, tokens }) {
 	}
 
 	return (
-		<SafeAreaView style={{ height: "110%" }}>
-			<ScrollView contentContainerStyle={styles.page}>
+		<ScrollView>
+			<SafeAreaView style={styles.page}>
 				<Header
 					heading={"Smart Documents"}
 					icon1={
@@ -148,22 +148,22 @@ export default function DocumentView({ docsArr, openDoc, deleteDoc, tokens }) {
 							</Text>
 
 							<View style={styles.listElement}>
-								<AntDesign
+								{/* <AntDesign
 									name="checkcircleo"
 									size={18}
 									color="black"
 									style={styles.listIcon}
-								/>
+								/> */}
 								<Text>Automatically add references to your work</Text>
 							</View>
 
 							<View style={styles.listElement}>
-								<AntDesign
+								{/* <AntDesign
 									name="checkcircleo"
 									size={18}
 									color="black"
 									style={styles.listIcon}
-								/>
+								/> */}
 								<Text>
 									Ask your document any questions, and get answers from the
 									document's content
@@ -171,22 +171,22 @@ export default function DocumentView({ docsArr, openDoc, deleteDoc, tokens }) {
 							</View>
 
 							<View style={styles.listElement}>
-								<AntDesign
+								{/* <AntDesign
 									name="checkcircleo"
 									size={18}
 									color="black"
 									style={styles.listIcon}
-								/>
+								/> */}
 								<Text>Summarize a document</Text>
 							</View>
 
 							<View style={styles.listElement}>
-								<AntDesign
+								{/* <AntDesign
 									name="checkcircleo"
 									size={18}
 									color="black"
 									style={styles.listIcon}
-								/>
+								/> */}
 								<Text>Paraphrase your document</Text>
 							</View>
 						</View>
@@ -226,14 +226,8 @@ export default function DocumentView({ docsArr, openDoc, deleteDoc, tokens }) {
 						);
 					})}
 				</View> */}
-			</ScrollView>
-
-			<LoadingCard
-				isLoading={isUploading}
-				loadingText={"Uploading document"}
-				width={"57%"}
-			/>
-		</SafeAreaView>
+			</SafeAreaView>
+		</ScrollView>
 	);
 }
 
@@ -287,6 +281,7 @@ const styles = StyleSheet.create({
 	listElement: {
 		flexDirection: "row",
 		marginBottom: 15,
+		// flexWrap: "wrap",
 	},
 	listIcon: {
 		marginRight: 15,

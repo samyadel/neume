@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
 	paywall: {
 		paddingVertical: 30,
 		paddingHorizontal: 20,
-		height: "100%",
+		// height: "100%",
 	},
 	proFeature: {
 		width: "100%",

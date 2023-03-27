@@ -9,60 +9,63 @@ import {
 	Ionicons,
 } from "@expo/vector-icons";
 import Header from "../../Header";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function SettingsOptions({ handleLogOut }) {
 	const navigation = useNavigation();
 
 	return (
-		<SafeAreaView style={styles.page}>
-			<Header heading="Settings" />
+		<ScrollView>
+			<SafeAreaView style={styles.page}>
+				<Header heading="Settings" />
 
-			<View style={styles.optionsContainer}>
-				<Pressable
-					style={styles.button}
-					onPress={() => navigation.navigate("AccountInformation")}
-				>
-					<View style={styles.leftContainer}>
-						<Feather name="user" size={18} color="black" />
-						<Text style={styles.buttonTxt}>Account information</Text>
-					</View>
-					<AntDesign name="right" size={16} color="black" />
-				</Pressable>
-				<Pressable
-					style={styles.button}
-					onPress={() => Linking.openURL("mailto:neumeapp.ai@gmail.com")}
-				>
-					<View style={styles.leftContainer}>
-						<MaterialIcons name="support-agent" size={18} color="black" />
-						<Text style={styles.buttonTxt}>Support</Text>
-					</View>
-					<AntDesign name="right" size={16} color="black" />
-				</Pressable>
-				<Pressable
-					style={styles.button}
-					onPress={() =>
-						Linking.openURL("https://samyadel.github.io/neume-tos/")
-					}
-				>
-					<View style={styles.leftContainer}>
-						<Ionicons
-							name="ios-document-text-outline"
-							size={18}
-							color="black"
-						/>
-						<Text style={styles.buttonTxt}>Terms of service</Text>
-					</View>
-					<AntDesign name="right" size={16} color="black" />
-				</Pressable>
-				<Pressable style={styles.button} onPress={handleLogOut}>
-					<View style={styles.leftContainer}>
-						<MaterialIcons name="logout" size={18} color="black" />
-						<Text style={styles.buttonTxt}>Log out</Text>
-					</View>
-					<AntDesign name="right" size={16} color="black" />
-				</Pressable>
-			</View>
-		</SafeAreaView>
+				<View style={styles.optionsContainer}>
+					<Pressable
+						style={styles.button}
+						onPress={() => navigation.navigate("AccountInformation")}
+					>
+						<View style={styles.leftContainer}>
+							<Feather name="user" size={18} color="black" />
+							<Text style={styles.buttonTxt}>Account information</Text>
+						</View>
+						<AntDesign name="right" size={16} color="black" />
+					</Pressable>
+					<Pressable
+						style={styles.button}
+						onPress={() => Linking.openURL("mailto:neumeapp.ai@gmail.com")}
+					>
+						<View style={styles.leftContainer}>
+							<MaterialIcons name="support-agent" size={18} color="black" />
+							<Text style={styles.buttonTxt}>Support</Text>
+						</View>
+						<AntDesign name="right" size={16} color="black" />
+					</Pressable>
+					<Pressable
+						style={styles.button}
+						onPress={() =>
+							Linking.openURL("https://samyadel.github.io/neume-tos/")
+						}
+					>
+						<View style={styles.leftContainer}>
+							<Ionicons
+								name="ios-document-text-outline"
+								size={18}
+								color="black"
+							/>
+							<Text style={styles.buttonTxt}>Terms of service</Text>
+						</View>
+						<AntDesign name="right" size={16} color="black" />
+					</Pressable>
+					<Pressable style={styles.button} onPress={handleLogOut}>
+						<View style={styles.leftContainer}>
+							<MaterialIcons name="logout" size={18} color="black" />
+							<Text style={styles.buttonTxt}>Log out</Text>
+						</View>
+						<AntDesign name="right" size={16} color="black" />
+					</Pressable>
+				</View>
+			</SafeAreaView>
+		</ScrollView>
 	);
 }
 
@@ -75,10 +78,9 @@ const styles = StyleSheet.create({
 	},
 	optionsContainer: {
 		width: "100%",
-		backgroundColor: "#ECEAF8",
+		// backgroundColor: "#ECEAF8",
 		height: "100%",
 		padding: 20,
-		paddingTop: 30,
 	},
 	button: {
 		flexDirection: "row",

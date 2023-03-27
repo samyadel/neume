@@ -101,78 +101,79 @@ export default function NotesView({
 	};
 
 	return (
-		<View>
-			<Pressable
-				onPress={() => setClicked(false)}
-				style={{
-					display: clicked ? "flex" : "none",
-					// backgroundColor: "#000",
-					// opacity: 0.5,
-					width: "100%",
-					height: "200%",
-					position: "absolute",
-					top: 0,
-					left: 0,
-					zIndex: 5,
-				}}
-			></Pressable>
-
-			<View
-				style={{
-					...styles.createOptions,
-					display: clicked ? "flex" : "none",
-				}}
-			>
-				<Pressable>
-					<Pressable
-						style={styles.createOption}
-						onPress={() => {
-							navigation.navigate("Create");
-							setClicked(false);
-						}}
-					>
-						<AntDesign
-							name="addfile"
-							size={16}
-							color="black"
-							style={styles.actionIcon}
-						/>
-						<Text>Write a note</Text>
-					</Pressable>
-					<Pressable
-						style={{ ...styles.createOption, marginBottom: 0 }}
-						onPress={() => {
-							navigation.navigate("Generate");
-							setClicked(false);
-						}}
-					>
-						<MaterialIcons
-							name="auto-fix-high"
-							size={16}
-							color="black"
-							style={styles.actionIcon}
-						/>
-						<Text>Generate a note</Text>
-					</Pressable>
-					{/* <Pressable
-						style={{ ...styles.createOption, marginBottom: 0 }}
-						onPress={() => {
-							navigation.navigate("Scan");
-							setClicked(false);
-						}}
-					>
-						<AntDesign
-							name="scan1"
-							size={16}
-							color="black"
-							style={styles.actionIcon}
-						/>
-						<Text>Scan Note</Text>
-					</Pressable> */}
-				</Pressable>
-			</View>
-
+		<ScrollView ref={notesScrollRef}>
 			<SafeAreaView style={styles.page}>
+				<Pressable
+					onPress={() => setClicked(false)}
+					style={{
+						display: clicked ? "flex" : "none",
+						// backgroundColor: "#000",
+						// opacity: 0.5,
+						width: "100%",
+						height: "200%",
+						position: "absolute",
+						top: 0,
+						left: 0,
+						zIndex: 5,
+					}}
+				></Pressable>
+
+				<View
+					style={{
+						...styles.createOptions,
+						display: clicked ? "flex" : "none",
+					}}
+				>
+					<Pressable>
+						<Pressable
+							style={styles.createOption}
+							onPress={() => {
+								navigation.navigate("Create");
+								setClicked(false);
+							}}
+						>
+							<AntDesign
+								name="addfile"
+								size={16}
+								color="black"
+								style={styles.actionIcon}
+							/>
+							<Text>Write a note</Text>
+						</Pressable>
+						<Pressable
+							style={{ ...styles.createOption, marginBottom: 0 }}
+							onPress={() => {
+								navigation.navigate("Generate");
+								setClicked(false);
+							}}
+						>
+							<MaterialIcons
+								name="auto-fix-high"
+								size={16}
+								color="black"
+								style={styles.actionIcon}
+							/>
+							<Text>Generate a note</Text>
+						</Pressable>
+						{/* <Pressable
+							style={{ ...styles.createOption, marginBottom: 0 }}
+							onPress={() => {
+								navigation.navigate("Scan");
+								setClicked(false);
+							}}
+						>
+							<AntDesign
+								name="scan1"
+								size={16}
+								color="black"
+								style={styles.actionIcon}
+							/>
+							<Text>Scan Note</Text>
+						</Pressable> */}
+					</Pressable>
+				</View>
+
+				{/* <ScrollView contentContainerStyle={styles.page}> */}
 				<Header
 					logo={
 						<Image
@@ -237,12 +238,10 @@ export default function NotesView({
 					setSelectedOption={setSelectedOption}
 				/>
 
-				<ScrollView
-					ref={notesScrollRef}
+				<View
 					style={{
 						...styles.displayNotesWrapper,
 						display: selectedOption === "notes" ? "flex" : "none",
-						width: "100%",
 					}}
 				>
 					{notes.length > 0 ? (
@@ -270,20 +269,19 @@ export default function NotesView({
 							);
 						})
 					) : (
-						<BlankPage heading="You have no notes">
+						<BlankPage heading="You have no notes" styles={styles}>
 							Start by pressing{" "}
 							<Feather name="plus" size={16} color="#494156" /> at the top of
 							your screen
 						</BlankPage>
 					)}
-				</ScrollView>
+				</View>
 
-				<ScrollView
+				<View
 					ref={favouritesScrollRef}
 					style={{
 						...styles.displayNotesWrapper,
 						display: selectedOption === "favourites" ? "flex" : "none",
-						width: "100%",
 					}}
 				>
 					{favouriteNoteArr.length > 0 ? (
@@ -317,9 +315,10 @@ export default function NotesView({
 							<AntDesign name={"star"} size={16} color="#494156" /> button
 						</BlankPage>
 					)}
-				</ScrollView>
+				</View>
+				{/* </ScrollView> */}
 			</SafeAreaView>
-		</View>
+		</ScrollView>
 	);
 }
 
@@ -362,13 +361,16 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 	displayNotesWrapper: {
-		height: "100%",
+		height: "50%",
+		// backgroundColor: "green",
 		width: "100%",
+		// backgroundColor: "red",
+		// justifyContent: notes.length > 0 ? "flex-start" : "center",
 	},
 	noNoteContainer: {
 		opacity: 0.7,
 		justifyContent: "center",
-		height: 500,
+		// backgroundColor: "blue",
 	},
 	noNoteHeading: {
 		fontWeight: "700",
@@ -376,6 +378,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		marginBottom: 15,
 		color: "#494156",
+		marginTop: 80,
 	},
 	noNoteSubheading: {
 		textAlign: "center",
@@ -385,14 +388,17 @@ const styles = StyleSheet.create({
 		lineHeight: 30,
 		opacity: 0.7,
 		fontWeight: "500",
-		marginBottom: 50,
 		color: "#494156",
 	},
 	page: {
-		alignItems: "center",
-		marginTop: 40,
+		// alignItems: "center",
+		paddingTop: 40,
 		paddingHorizontal: 30,
-		width: "100%",
-		height: "93.5%",
+		// width: "100%",
+		// height: "93.5%",
+		// flex: 1,
+		// backgroundColor: "red",
+		height: "100%",
+		// flex: 1,
 	},
 });

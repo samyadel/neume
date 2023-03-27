@@ -166,7 +166,7 @@ export default function Flashcards({
 	}
 
 	return (
-		<View>
+		<ScrollView>
 			{creatingFlashcard && (
 				<Pressable style={styles.overlay} onPress={Keyboard.dismiss}>
 					<View style={styles.createFlashWrapper}>
@@ -366,7 +366,7 @@ export default function Flashcards({
 					</View>
 				</ScrollView>
 			</SafeAreaView>
-		</View>
+		</ScrollView>
 	);
 }
 
